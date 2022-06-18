@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileStorageOnline", "FileStorageOnline.csproj", "{04CDA38F-A148-44B1-8B30-F974D3C11A6F}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{04CDA38F-A148-44B1-8B30-F974D3C11A6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{04CDA38F-A148-44B1-8B30-F974D3C11A6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{04CDA38F-A148-44B1-8B30-F974D3C11A6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{04CDA38F-A148-44B1-8B30-F974D3C11A6F}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E0C283D4-C95A-4EAB-B31A-E02738B7EB27}
+	EndGlobalSection
+EndGlobal
