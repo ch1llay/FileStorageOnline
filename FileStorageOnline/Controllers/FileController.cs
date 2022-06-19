@@ -12,9 +12,11 @@ namespace FileStorageOnline.Controllers
     public class FileController : Controller
     {
         IFileRepository _fileRepository;
-        public FileController(IFileRepository fileRepository)
+        private readonly IWebHostEnvironment _appEnvironment;
+        public FileController(IFileRepository fileRepository, IWebHostEnvironment appEvironment)
         {
             _fileRepository = fileRepository;
+            _appEnvironment = appEvironment;
         }
         
         [HttpPost]
@@ -27,11 +29,24 @@ namespace FileStorageOnline.Controllers
                 Path = filename,
             }));
         }
-        [HttpGet]
-        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileModel))]
-        public async Task<IActionResult> FileGet(Guid id)
+        //[HttpGet]
+        //[SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileModel))]
+        //public async Task<IActionResult> FileGet(Guid id)
+        //{
+        //    return Ok(await _fileRepository.Get(id));
+        //}
+
+        [HttpGet("[controller]/file")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "File", typeof(VirtualFileResult))]
+        public async Task<IActionResult> GetFileAny()
         {
-            return Ok(await _fileRepository.Get(id));
+            // Путь к файлу
+            string file_path = Path.Combine(_appEnvironment.ContentRootPath, "Files/TextFile.txt");
+            // Тип файла - content-type
+            string file_type = "file/txt";
+            // Имя файла - необязательно
+            string file_name = "file.txt";
+            return PhysicalFile(file_path, file_type, file_name);
         }
     }
 }
