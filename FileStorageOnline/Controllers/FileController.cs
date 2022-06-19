@@ -12,41 +12,110 @@ namespace FileStorageOnline.Controllers
     public class FileController : Controller
     {
         IFileRepository _fileRepository;
-        private readonly IWebHostEnvironment _appEnvironment;
+        // private readonly IWebHostEnvironment _appEnvironment;
         public FileController(IFileRepository fileRepository, IWebHostEnvironment appEvironment)
         {
             _fileRepository = fileRepository;
-            _appEnvironment = appEvironment;
+            //_appEnvironment = appEvironment;
         }
-        
-        [HttpPost]
-        //[SwaggerResponse((int)HttpStatusCode.OK, "Guid", typeof(Guid))]
-        public async Task<IActionResult> FileLoad(string filename)
+
+        [HttpPost("/LoadMany")]
+        public async Task<IActionResult> OnPostUploadAsync(IFormFileCollection files)
         {
-            return Ok(await _fileRepository.Create(new DbFileModel
+            long size = files.Sum(f => f.Length);
+
+            foreach (var formFile in files)
             {
-                Name = filename,
-                Path = filename,
-            }));
+                using (var memoryStream = new MemoryStream())
+                {
+                    await formFile.CopyToAsync(memoryStream);
+
+                    // Upload the file if less than 2 MB
+                    // if (memoryStream.Length < 2097152)
+                    // {
+                    var file = new DbFileModel()
+                    {
+                        Name = formFile.FileName,
+                        FileData = memoryStream.ToArray(),
+                        SizeInByte = formFile.Length,
+                        Uri = Guid.NewGuid(),
+                        FileType = formFile.ContentType
+
+                    };
+
+                    await _fileRepository.Create(file);
+
+                    //}
+                    //else
+                    //{
+                    //    ModelState.AddModelError("File", "The file is too large.");
+                    //}
+                }
+            }
+
+            // Process uploaded files
+            // Don't rely on or trust the FileName property without validation.
+
+            return Ok(new { count = files.Count, size });
         }
-        //[HttpGet]
-        //[SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileModel))]
-        //public async Task<IActionResult> FileGet(Guid id)
-        //{
-        //    return Ok(await _fileRepository.Get(id));
-        //}
+
+        [HttpGet("/getFile/{uri}")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileModel))]
+        public async Task<IActionResult> Get(string uri)
+        {
+            var file = (await _fileRepository.GetAllAsQuaryable()).FirstOrDefault(x => x.Uri.ToString() == uri);
+            if (file == null) return NotFound();
+
+            file.Uri = Guid.NewGuid();
+            await _fileRepository.Update(file);
+            return File(file.FileData, file.FileType, file.Name);
+
+        }
+
+        [HttpPost("/LoadOne")]
+        //[SwaggerResponse((int)HttpStatusCode.OK, "Guid", typeof(Guid))]
+        public async Task<IActionResult> FileLoad(IFormFile formFile)
+        {
+            using (var memoryStream = new MemoryStream())
+            {
+                await formFile.CopyToAsync(memoryStream);
+
+                // Upload the file if less than 2 MB
+                if (memoryStream.Length < 2097152)
+                {
+                    var file = new DbFileModel()
+                    {
+                        Name = formFile.FileName,
+                        FileData = memoryStream.ToArray(),
+                        SizeInByte = formFile.Length,
+                        Uri = Guid.NewGuid(),
+                        FileType = formFile.ContentType
+
+                    };
+
+                    await _fileRepository.Create(file);
+
+                }
+                else
+                {
+                    // ModelState.AddModelError("File", "The file is too large.");
+                }
+            }
+            return Ok(new { filename = formFile.FileName, length = formFile.Length });
+        }
+        [HttpGet]
+        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileModel))]
+        public async Task<IActionResult> Get()
+        {
+            return Ok((await _fileRepository.GetAllAsQuaryable()).Select(x=> new { name = x.Name, type = x.FileType, uri = $"getFile/{x.Uri}" }));
+        }
 
         [HttpGet("[controller]/file")]
         [SwaggerResponse((int)HttpStatusCode.OK, "File", typeof(VirtualFileResult))]
         public async Task<IActionResult> GetFileAny()
         {
-            // Путь к файлу
-            string file_path = Path.Combine(_appEnvironment.ContentRootPath, "Files/TextFile.txt");
-            // Тип файла - content-type
-            string file_type = "file/txt";
-            // Имя файла - необязательно
-            string file_name = "file.txt";
-            return PhysicalFile(file_path, file_type, file_name);
+            
+            return Ok();
         }
     }
 }

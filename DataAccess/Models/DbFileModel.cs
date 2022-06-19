@@ -17,7 +17,9 @@ namespace DataAccess.Models
         [Required]
         public long SizeInByte { get; set; }
         [Required]
-        public string? Path { get; set; }
+        public byte[] FileData { get; set; }
+        public Guid Uri { get; set; }
+        public string? FileType { get; set; }
 
     }
 }

@@ -46,6 +46,10 @@ namespace Domain
         {
             return await _dataContext.Files.ToListAsync();
         }
+        public async Task<IQueryable<DbFileModel>> GetAllAsQuaryable()
+        {
+            return _dataContext.Files.AsQueryable();
+        }
 
         public async Task<DbFileModel?> Update(DbFileModel model)
         {
