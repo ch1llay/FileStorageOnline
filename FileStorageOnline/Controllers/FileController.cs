@@ -11,7 +11,7 @@ namespace FileStorageOnline.Controllers
     [Produces("application/json")]
     public class FileController : Controller
     {
-        IFileRepository _fileRepository;
+        private IFileRepository _fileRepository;
         // private readonly IWebHostEnvironment _appEnvironment;
         public FileController(IFileRepository fileRepository, IWebHostEnvironment appEvironment)
         {
@@ -19,7 +19,7 @@ namespace FileStorageOnline.Controllers
             //_appEnvironment = appEvironment;
         }
 
-        [HttpPost("/LoadMany")]
+        [HttpPost("/loadMany")]
         public async Task<IActionResult> OnPostUploadAsync(IFormFileCollection files)
         {
             long size = files.Sum(f => f.Length);
@@ -30,26 +30,17 @@ namespace FileStorageOnline.Controllers
                 {
                     await formFile.CopyToAsync(memoryStream);
 
-                    // Upload the file if less than 2 MB
-                    // if (memoryStream.Length < 2097152)
-                    // {
-                    var file = new DbFileModel()
+
+                    var file = new DbFileInfo()
                     {
                         Name = formFile.FileName,
                         FileData = memoryStream.ToArray(),
                         SizeInByte = formFile.Length,
-                        Uri = Guid.NewGuid(),
                         FileType = formFile.ContentType
 
                     };
 
                     await _fileRepository.Create(file);
-
-                    //}
-                    //else
-                    //{
-                    //    ModelState.AddModelError("File", "The file is too large.");
-                    //}
                 }
             }
 
@@ -59,15 +50,22 @@ namespace FileStorageOnline.Controllers
             return Ok(new { count = files.Count, size });
         }
 
-        [HttpGet("/getFile/{uri}")]
-        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileModel))]
-        public async Task<IActionResult> Get(string uri)
+        [HttpGet("/getFile/{uri:Guid}")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileInfo))]
+        public async Task<IActionResult> Get(Guid uri)
         {
-            var file = (await _fileRepository.GetAllAsQuaryable()).FirstOrDefault(x => x.Uri.ToString() == uri);
-            if (file == null) return NotFound();
+            var link = await _fileRepository.GetLink(uri);
+            if (link == null)
+            {
+                return NotFound();
+            }
 
-            file.Uri = Guid.NewGuid();
-            await _fileRepository.Update(file);
+            var file = await _fileRepository.GetFileByLink(uri);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
             return File(file.FileData, file.FileType, file.Name);
 
         }
@@ -80,42 +78,27 @@ namespace FileStorageOnline.Controllers
             {
                 await formFile.CopyToAsync(memoryStream);
 
-                // Upload the file if less than 2 MB
-                if (memoryStream.Length < 2097152)
+
+                var file = new DbFileInfo()
                 {
-                    var file = new DbFileModel()
-                    {
-                        Name = formFile.FileName,
-                        FileData = memoryStream.ToArray(),
-                        SizeInByte = formFile.Length,
-                        Uri = Guid.NewGuid(),
-                        FileType = formFile.ContentType
+                    Name = formFile.FileName,
+                    
+                    SizeInByte = formFile.Length,
+                    FileType = formFile.ContentType
 
-                    };
+                };
 
-                    await _fileRepository.Create(file);
+                await _fileRepository.Create(file);
 
-                }
-                else
-                {
-                    // ModelState.AddModelError("File", "The file is too large.");
-                }
             }
             return Ok(new { filename = formFile.FileName, length = formFile.Length });
         }
         [HttpGet]
-        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileModel))]
+        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileInfo))]
         public async Task<IActionResult> Get()
         {
-            return Ok((await _fileRepository.GetAllAsQuaryable()).Select(x=> new { name = x.Name, type = x.FileType, uri = $"getFile/{x.Uri}" }));
+            return Ok((await _fileRepository.GetAll())
         }
 
-        [HttpGet("[controller]/file")]
-        [SwaggerResponse((int)HttpStatusCode.OK, "File", typeof(VirtualFileResult))]
-        public async Task<IActionResult> GetFileAny()
-        {
-            
-            return Ok();
-        }
     }
 }

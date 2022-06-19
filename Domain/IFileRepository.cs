@@ -7,7 +7,19 @@ using System.Threading.Tasks;
 
 namespace Domain
 {
-    public interface IFileRepository : IRepository<DbFileModel>
+    public interface IFileRepository : IRepository<DbFileInfo>
     {
+        Task<Guid> CreateLink(DbOneTimeLinkModel model);
+        Task<bool> DeleteLink(Guid id);
+        Task<DbFileInfo> GetFileByLink(Guid linkId);
+        Task<DbOneTimeLinkModel> GetLink(Guid id);
+        Task<IEnumerable<DbOneTimeLinkModel>> GetAllLink();
+
+        Task<DbFileData> GetFileData(Guid fileInfoId);
+
+
+
+
+
     }
 }
