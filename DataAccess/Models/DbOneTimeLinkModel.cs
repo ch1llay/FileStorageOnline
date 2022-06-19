@@ -11,6 +11,7 @@ namespace DataAccess.Models
     {
         [Key]
         public Guid Id { get; set; }
-        public Guid FileId { get; set; }
+        [Required]
+        public Guid FileInfoId { get; set; }
     }
 }

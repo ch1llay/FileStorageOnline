@@ -30,17 +30,21 @@ namespace FileStorageOnline.Controllers
                 {
                     await formFile.CopyToAsync(memoryStream);
 
-
+                    var fileData = new DbFileData
+                    {
+                        Content = memoryStream.ToArray()
+                    };
+                    var fileDataId = await _fileRepository.CreateFileData(fileData);
                     var file = new DbFileInfo()
                     {
                         Name = formFile.FileName,
-                        FileData = memoryStream.ToArray(),
                         SizeInByte = formFile.Length,
-                        FileType = formFile.ContentType
+                        FileType = formFile.ContentType,
+                        FileDataId = fileData.Id
 
                     };
 
-                    await _fileRepository.Create(file);
+                    await _fileRepository.CreateFileInfo(file);
                 }
             }
 
@@ -60,12 +64,13 @@ namespace FileStorageOnline.Controllers
                 return NotFound();
             }
 
-            var file = await _fileRepository.GetFileByLink(uri);
-            if (file == null)
+            var fileInfo = await _fileRepository.GetFileByLink(uri);
+            if (fileInfo == null)
             {
                 return NotFound();
             }
-
+            var fileData = _fileRepository.GetFileData(fileInfo.Id);
+            
             return File(file.FileData, file.FileType, file.Name);
 
         }
@@ -88,7 +93,7 @@ namespace FileStorageOnline.Controllers
 
                 };
 
-                await _fileRepository.Create(file);
+                await _fileRepository.CreateFileInfo(file);
 
             }
             return Ok(new { filename = formFile.FileName, length = formFile.Length });
@@ -97,7 +102,7 @@ namespace FileStorageOnline.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileInfo))]
         public async Task<IActionResult> Get()
         {
-            return Ok((await _fileRepository.GetAll())
+            return Ok((await _fileRepository.GetAllFileInfo()));
         }
 
     }

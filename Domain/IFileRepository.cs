@@ -9,13 +9,20 @@ namespace Domain
 {
     public interface IFileRepository : IRepository<DbFileInfo>
     {
+        Task<Guid> CreateFileInfo(DbFileInfo model);
+        Task<DbFileInfo?> UpdateFileInfo(DbFileInfo model);
+        Task<bool> DeleteFileInfo(Guid id);
+        Task<IEnumerable<DbFileInfo>> GetAllFileInfo();
+        Task<DbFileInfo?> GetFileInfo(Guid id);
+
         Task<Guid> CreateLink(DbOneTimeLinkModel model);
         Task<bool> DeleteLink(Guid id);
-        Task<DbFileInfo> GetFileByLink(Guid linkId);
+        Task<DbFileData> GetFileByLink(Guid linkId);
         Task<DbOneTimeLinkModel> GetLink(Guid id);
-        Task<IEnumerable<DbOneTimeLinkModel>> GetAllLink();
 
-        Task<DbFileData> GetFileData(Guid fileInfoId);
+        Task<Guid> CreateFileData(DbFileData model);
+        Task<DbFileData> GetFileData(Guid id);
+
 
 
 

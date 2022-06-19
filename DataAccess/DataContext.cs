@@ -8,7 +8,8 @@ namespace DataAccess
 {
     public class DataContext : DbContext
     {
-        public DbSet<DbFileInfo> Files { get; set; }
+        public DbSet<DbFileInfo> InfoFiles { get; set; }
+        public DbSet<DbFileData> DataFiles { get; set; }
         public DbSet<DbOneTimeLinkModel> Links { get; set; }
 
         public DataContext(DbContextOptions options) : base(options)

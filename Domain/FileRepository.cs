@@ -13,9 +13,9 @@ namespace Domain
             _dataContext = dataContext;
         }
 
-        public async Task<Guid> Create(DbFileInfo model)
+        public async Task<Guid> CreateFileInfo(DbFileInfo model)
         {
-            var obj = (await _dataContext.Files.AddAsync(model)).Entity;
+            var obj = (await _dataContext.InfoFiles.AddAsync(model)).Entity;
             if (obj == null)
             {
                 return Guid.Empty;
@@ -26,24 +26,24 @@ namespace Domain
             return obj.Id;
         }
 
-        public async Task<bool> Delete(Guid id)
+        public async Task<bool> DeleteFileInfo(Guid id)
         {
-            var obj = await _dataContext.Files.FirstOrDefaultAsync(x => x.Id == id);
+            var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == id);
 
             if (obj == null)
             {
                 return false;
             }
 
-            _dataContext.Files.Remove(obj);
+            _dataContext.InfoFiles.Remove(obj);
             int changes = await _dataContext.SaveChangesAsync();
 
             return changes != 0;
         }
 
-        public async Task<DbFileInfo?> Get(Guid id)
+        public async Task<DbFileInfo?> GetFileInfo(Guid id)
         {
-            var obj = await _dataContext.Files.FirstOrDefaultAsync(x => x.Id == id);
+            var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == id);
             if (obj == null)
             {
                 return null;
@@ -52,14 +52,14 @@ namespace Domain
             return obj;
         }
 
-        public async Task<IEnumerable<DbFileInfo>> GetAll()
+        public async Task<IEnumerable<DbFileInfo>> GetAllFileInfo()
         {
-            return await _dataContext.Files.ToListAsync();
+            return await _dataContext.InfoFiles.ToListAsync();
         }
 
         public async Task<IQueryable<DbFileInfo>> GetAllAsQuaryable()
         {
-            return _dataContext.Files.AsQueryable();
+            return _dataContext.InfoFiles.AsQueryable();
         }
 
         //public async Task<IQueryable<DbFileModel>> GetAllAsWithoutUrl()
@@ -67,14 +67,14 @@ namespace Domain
         //    return _dataContext.Files.AsQueryable().Select(x => new { name = x.Name, type = x.FileType, uri = $"getFile/{x.Uri}" });
         //}
 
-        public async Task<DbFileInfo?> Update(DbFileInfo model)
+        public async Task<DbFileInfo?> UpdateFileInfo(DbFileInfo model)
         {
             if (model == null)
             {
                 return null;
             }
 
-            var obj = await _dataContext.Files.FirstOrDefaultAsync(x => x.Id == model.Id);
+            var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == model.Id);
             if (obj == null)
             {
                 return null;
@@ -136,7 +136,7 @@ namespace Domain
             return obj;
         }
 
-        public async Task<DbFileInfo> GetFileByLink(Guid linkId)
+        public async Task<DbFileData> GetFileByLink(Guid linkId)
         {
             var link = await GetLink(linkId);
             if (link == null)
@@ -144,7 +144,7 @@ namespace Domain
                 return null;
             }
 
-            var file = await Get(link.FileId);
+            var file = await GetFileData(link.FileInfoId);
             if (file == null)
             {
                 return null;
@@ -153,6 +153,30 @@ namespace Domain
             return file;
         }
 
+        public async Task<Guid> CreateFileData(DbFileData model)
+        {
+            var obj = (await _dataContext.DataFiles.AddAsync(model)).Entity;
+            if (obj == null)
+            {
+                return Guid.Empty;
+            }
+
+            _dataContext.SaveChanges();
+
+            return obj.Id;
+        }
+
+        public async Task<DbFileData> GetFileData(Guid id)
+        {
+ 
+            var fileData = await _dataContext.DataFiles.FirstOrDefaultAsync(x=> x.Id == id);
+            if (fileData == null)
+            {
+                return null;
+            }
+
+            return fileData;
+        }
 
     }
 }
