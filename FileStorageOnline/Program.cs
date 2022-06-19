@@ -12,24 +12,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen(options =>
-{
-    options.SwaggerDoc("v1", new OpenApiInfo
-    {
-        Version = "v1",
-        Title = "",
-        Description = "",
-        Contact = new OpenApiContact()
-        {
-            Name = "",
-            Email = ""
-        }
-    });
-    var xmlFilename = $"{Assembly.GetExecutingAssembly().GetName().Name}.xml";
-    options.IncludeXmlComments(Path.Combine(AppContext.BaseDirectory, xmlFilename));
-    options.ResolveConflictingActions(apiDescriptions => apiDescriptions.First());
-});
-// builder.Services.AddSingleton<DataContext>();
+builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IFileRepository, FileRepository>();
 
 var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
