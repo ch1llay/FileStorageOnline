@@ -1,5 +1,5 @@
 ﻿using DataAccess.Models;
-using Domain;
+using Domain.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Net;
@@ -11,9 +11,9 @@ namespace FileStorageOnline.Controllers
     [Produces("application/json")]
     public class FileController : Controller
     {
-        private IFileRepository _fileRepository;
+        private IFileInfoRepository _fileRepository;
         // private readonly IWebHostEnvironment _appEnvironment;
-        public FileController(IFileRepository fileRepository, IWebHostEnvironment appEvironment)
+        public FileController(IFileInfoRepository fileRepository, IWebHostEnvironment appEvironment)
         {
             _fileRepository = fileRepository;
             //_appEnvironment = appEvironment;

@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 namespace DataAccess.Models
 {
-    public class DbOneTimeLinkModel
+    public class DbLink
     {
         [Key]
         public Guid Id { get; set; }
         [Required]
-        public Guid FileInfoId { get; set; }
+        public Guid DbFileInfoId { get; set; }
     }
 }

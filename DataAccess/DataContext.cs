@@ -10,7 +10,7 @@ namespace DataAccess
     {
         public DbSet<DbFileInfo> InfoFiles { get; set; }
         public DbSet<DbFileData> DataFiles { get; set; }
-        public DbSet<DbOneTimeLinkModel> Links { get; set; }
+        public DbSet<DbLink> Links { get; set; }
 
         public DataContext(DbContextOptions options) : base(options)
         {
