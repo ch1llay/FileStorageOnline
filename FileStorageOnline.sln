@@ -9,7 +9,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Domain", "Domain\Domain.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FileStorageOnline", "FileStorageOnline\FileStorageOnline.csproj", "{CCAC7074-E54A-4253-B391-CB401C330755}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FileService", "FileService\FileService.csproj", "{C20EAFF8-0B72-4D40-AD0F-8B88CEA97952}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Service", "FileService\Service.csproj", "{C20EAFF8-0B72-4D40-AD0F-8B88CEA97952}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

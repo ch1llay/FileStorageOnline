@@ -1,8 +1,8 @@
 ﻿using DataAccess.Models;
 using Domain.Interfaces;
-using FileService.Models;
+using Service.Models;
 
-namespace FileService
+namespace Service
 {
     public class FileService : IFileService
     {
@@ -11,16 +11,26 @@ namespace FileService
         private readonly ILinkRepository _linkRepository;
 
 
+
+
         public FileService(IFileInfoRepository fileInfoRepository, IFileDataRepository fileDataRepository, ILinkRepository linkRepository)
         {
             _fileInfoRepository = fileInfoRepository;
             _fileDataRepository = fileDataRepository;
             _linkRepository = linkRepository;
         }
-        public async Task<List<FileModel>> GetAllFilesInfo()
+        public async Task<List<FileModelService>> GetAllFilesInfo(string webRoot)
         {
 
-            return await _fileInfoRepository.GetFileModels();
+            return (await _fileInfoRepository.GetFileModels()).Select(x => new FileModelService
+            {
+                Id = x.Id,
+                Name = x.Name,
+                FileType = x.FileType,
+                SizeInByte = x.SizeInByte,
+                Link = $"{webRoot}{x.Link}"
+
+            }).ToList();
 
         }
 
@@ -54,9 +64,25 @@ namespace FileService
                 Content = fileData.Content
             };
         }
-        public async Task<string> GetLinkForFile(Guid fileId)
+
+        public async Task<Guid> LoadFile(FileFullModel fileFullModel)
         {
-            return (await _linkRepository.GetLinkIdByFileInfoId(fileId)).ToString("N");
+            var fileData = new DbFileData
+            {
+                Content = fileFullModel.Content
+            };
+            var fileDataId = await _fileDataRepository.Create(fileData);
+            var file = new DbFileInfo()
+            {
+                Name = fileFullModel.Name,
+                SizeInByte = fileFullModel.SizeInByte,
+                FileType = fileFullModel.FileType,
+                FileDataId = fileData.Id
+
+            };
+
+            var id = await _fileInfoRepository.Create(file);
+            return id;
         }
     }
 }
