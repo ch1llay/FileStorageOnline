@@ -19,10 +19,10 @@ namespace Service
             _fileDataRepository = fileDataRepository;
             _linkRepository = linkRepository;
         }
-        public async Task<List<FileModelService>> GetAllFilesInfo(string webRoot)
+        public async Task<List<FileInfoService>> GetAllFilesInfo(string webRoot)
         {
 
-            return (await _fileInfoRepository.GetFileModels()).Select(x => new FileModelService
+            return (await _fileInfoRepository.GetFileModels()).Select(x => new FileInfoService
             {
                 Id = x.Id,
                 Name = x.Name,

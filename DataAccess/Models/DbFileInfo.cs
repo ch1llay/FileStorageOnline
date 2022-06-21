@@ -13,8 +13,7 @@ namespace DataAccess.Models
         public long SizeInByte { get; set; }
         [Required]
         public string? FileType { get; set; }
-        [Required]
-        public Guid FileDataId { get; set; }
+        public int PercentLoad { get; set; }
 
     }
 }

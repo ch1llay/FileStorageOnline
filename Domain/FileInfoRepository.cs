@@ -45,51 +45,11 @@ public class FileInfoRepository : IFileInfoRepository
     public async Task<DbFileInfo?> Get(Guid id)
     {
         var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == id);
-        if (obj == null)
-        {
-            return null;
-        }
-
         return obj;
     }
 
-    public async Task<DbFileInfo?> Update(DbFileInfo entity)
+    public async Task<List<DbFileInfo>> GetAll()
     {
-        if (entity == null)
-        {
-            return null;
-        }
-
-        var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == entity.Id);
-        if (obj == null)
-        {
-            return null;
-        }
-
-        var updatedModel = _dataContext.Entry(obj);
-        updatedModel.State = EntityState.Modified;
-        if (updatedModel.Entity == null)
-        {
-            return null;
-        }
-
-        return await _dataContext.SaveChangesAsync() != 0
-            ? updatedModel.Entity
-            : null;
-    }
-    public async Task<List<FileModel>> GetFileModels()
-    {
-        return await _dataContext.InfoFiles.Join(_dataContext.Links,
-            u => u.Id,
-            l => l.FileInfoId,
-            (u, l) => new FileModel
-            {
-                Id = u.Id,
-                Name = u.Name,
-                SizeInByte = u.SizeInByte,
-                FileType = u.FileType,
-                Link = l.Id.ToString("N")
-
-            }).ToListAsync();
+        return await _dataContext.InfoFiles.ToListAsync();
     }
 }

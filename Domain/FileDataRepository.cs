@@ -31,45 +31,6 @@ namespace Domain.Interfaces
 
             return obj.Id;
         }
-
-        public async Task<DbFileData?> Update(DbFileData entity)
-        {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var obj = await _dataContext.DataFiles.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            if (obj == null)
-            {
-                return null;
-            }
-
-            var updatedModel = _dataContext.Entry(obj);
-            updatedModel.State = EntityState.Modified;
-            if (updatedModel.Entity == null)
-            {
-                return null;
-            }
-
-            return await _dataContext.SaveChangesAsync() != 0
-                ? updatedModel.Entity
-                : null;
-        }
-
-        public async Task<bool> Delete(Guid id)
-        {
-            var obj = await _dataContext.DataFiles.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (obj == null)
-            {
-                return false;
-            }
-            var changes = await _dataContext.SaveChangesAsync();
-
-            return changes != 0;
-        }
-
         public async Task<DbFileData?> Get(Guid id)
         {
             var obj = await _dataContext.DataFiles.FirstOrDefaultAsync(x => x.Id == id);

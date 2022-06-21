@@ -50,53 +50,12 @@ namespace Domain
         public async Task<DbLink?> Get(Guid id)
         {
             var obj = await _dataContext.Links.FirstOrDefaultAsync(x => x.Id == id);
-            if (obj == null)
-            {
-                return null;
-            }
-
             return obj;
         }
 
-        public async Task<DbLink?> Update(DbLink entity)
+        public Task<DbLink?> GetByFileId(Guid fileId)
         {
-            if (entity == null)
-            {
-                return null;
-            }
-
-            var obj = await _dataContext.Links.FirstOrDefaultAsync(x => x.Id == entity.Id);
-            if (obj == null)
-            {
-                return null;
-            }
-
-            var updatedModel = _dataContext.Entry(obj);
-            updatedModel.State = EntityState.Modified;
-            if (updatedModel.Entity == null)
-            {
-                return null;
-            }
-
-            return await _dataContext.SaveChangesAsync() != 0
-                ? updatedModel.Entity
-                : null;
-        }
-
-        public async Task<IEnumerable<DbLink>> GetAll()
-        {
-            return await _dataContext.Links.ToListAsync();
-        }
-
-        public async Task<Guid> GetLinkIdByFileInfoId(Guid fileInfoId)
-        {
-            var link = await _dataContext.Links.FirstOrDefaultAsync(x => x.FileInfoId == fileInfoId);
-            if (link == null)
-            {
-                return Guid.Empty;
-            }
-            return link.Id;
-            
+            return _dataContext.Links.FirstOrDefaultAsync(x => x.FileInfoId == fileId);
         }
     }
 }

@@ -10,7 +10,7 @@ namespace Service
 {
     public interface IFileService
     {
-        public Task<List<FileModelService>> GetAllFilesInfo(string webRoot);
+        public Task<List<FileInfoService>> GetAllFilesInfo(string webRoot);
         public Task<FileFullModel> GetFileFullModelByLink(string link);
         public Task<Guid> LoadFile(FileFullModel fileFullModel);
     }

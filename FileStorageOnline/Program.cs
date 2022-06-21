@@ -18,7 +18,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddScoped<IFileInfoRepository, FileInfoRepository>();
 builder.Services.AddScoped<IFileDataRepository, FileDataRepository>();
 builder.Services.AddScoped<ILinkRepository, LinkRepository>();
-builder.Services.AddScoped<IFileService, FileService>();
+builder.Services.AddTransient<IFileService, FileService>();
 
 var connectionString = builder.Configuration.GetConnectionString("SqlConnection");
 builder.Services.AddDbContext<DataContext>(

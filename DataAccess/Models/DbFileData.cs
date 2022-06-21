@@ -9,6 +9,7 @@ namespace DataAccess.Models
     public class DbFileData
     {
         public Guid Id { get; set; }
+        public Guid FileInfoId { get; set; }
         public byte[] Content { get; set; }
 
     }

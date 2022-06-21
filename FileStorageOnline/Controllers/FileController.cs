@@ -43,7 +43,7 @@ namespace FileStorageOnline.Controllers
         //            };
         //            _fileService.LoadFile(file);
         //        }
-                
+
         //    }
 
         //    // Process uploaded files
@@ -52,9 +52,27 @@ namespace FileStorageOnline.Controllers
         //    return Ok(new { count = files.Count, size });
         //}
 
+        [HttpGet("/getUrl")]
+        [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileInfo))]
+        public async Task<IActionResult> GetUrlForFile([FromQuery] Guid fileId)
+        {
+            if (!Guid.TryParse(uri, out Guid _))
+            {
+                return BadRequest();
+            }
+            var file = await _fileService.GetFileFullModelByLink(uri);
+            if (file == null)
+            {
+                return NotFound();
+            }
+
+            return File(file.Content, file.FileType, file.Name);
+
+        }
+
         [HttpGet("/downloadFile/{uri}")]
         [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileInfo))]
-        public async Task<IActionResult> Get(string uri)
+        public async Task<IActionResult> Download(string uri)
         {
             if (!Guid.TryParse(uri, out Guid _))
             {
@@ -93,7 +111,7 @@ namespace FileStorageOnline.Controllers
         [SwaggerResponse((int)HttpStatusCode.OK, "DbFileModel", typeof(DbFileInfo))]
         public async Task<IActionResult> Get()
         {
-            return Ok((await _fileService.GetAllFilesInfo(_appEnvironment.WebRootPath)));
+            return Ok((await _fileService.GetAllFilesInfo("")));
         }
 
     }
