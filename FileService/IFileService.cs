@@ -11,6 +11,6 @@ namespace FileService
     {
         public Task<List<FileInfoModel>> GetAllFileInfo();
         public Task<FileInfoModel> GetFileInfoByLink(string link);
-        public Task<FileModel> GetFileByLink(string link);
+        public Task<FileFullModel> GetFileByLink(string link);
     }
 }

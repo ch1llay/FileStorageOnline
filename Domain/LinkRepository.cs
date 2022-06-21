@@ -87,5 +87,16 @@ namespace Domain
         {
             return await _dataContext.Links.ToListAsync();
         }
+
+        public async Task<Guid> GetLinkIdByFileInfoId(Guid fileInfoId)
+        {
+            var link = await _dataContext.Links.FirstOrDefaultAsync(x => x.FileInfoId == fileInfoId);
+            if (link == null)
+            {
+                return Guid.Empty;
+            }
+            return link.Id;
+            
+        }
     }
 }

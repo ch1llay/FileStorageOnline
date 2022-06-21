@@ -4,5 +4,6 @@ namespace Domain.Interfaces
 {
     public interface ILinkRepository : IRepository<DbLink>, IRepositoryGetAllable<DbLink>
     {
+        public Task<Guid> GetLinkIdByFileInfoId(Guid fileInfoId);
     }
 }

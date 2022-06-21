@@ -16,27 +16,41 @@ namespace FileService
             _fileDataRepository = fileDataRepository;
             _linkRepository = linkRepository;
         }
-
-        public async Task<List<FileInfoModel>> GetAllFileInfo()
+        public async Task<List<FileFullModel>> GetAllFileInfo()
         {
-            Guid.
-            return (await _fileInfoRepository.GetAll()).Select(x => new FileInfoModel
-            {
-                Name = x.Name,
-                FileType = x.FileType,
-                SizeInByte = x.SizeInByte,
-                Lin
-            })
-        }
 
-        public Task<FileModel> GetFileByLink(string link)
+            var files = await _fileInfoRepository.GetAll();
+            List<FileInfoModel> result = new List<FileInfoModel>();
+            foreach(var file in files)
+            {
+                var link = await GetLinkForFile(file.Id);
+                result.Add(new FileInfoModel
+                {
+                    Name = file.Name,
+                    f
+                }
+            }
+        }
+        public async Task<string> GetLinkForFile(Guid fileId)
+        {
+            return (await _linkRepository.GetLinkIdByFileInfoId(fileId)).ToString("N");
+        }
+        public Task<FileFullModel> GetFileByLink(string link)
         {
             throw new NotImplementedException();
         }
 
+
         public Task<FileInfoModel> GetFileInfoByLink(string link)
         {
-            var link = _linkRepository.Get();
+            Guid guid;
+            if (!Guid.TryParse(link, out guid))
+            {
+                return null;
+            }
+
+            return null;
+            // var link = _linkRepository.Get();
         }
     }
 }

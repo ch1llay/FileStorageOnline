@@ -77,9 +77,19 @@ public class FileInfoRepository : IFileInfoRepository
             ? updatedModel.Entity
             : null;
     }
-
-    public async Task<IEnumerable<DbFileInfo>> GetAll()
+    public async Task<List<FileModel>> GetFileModels()
     {
-        return await _dataContext.InfoFiles.ToListAsync();
+        return await _dataContext.InfoFiles.Join(_dataContext.Links,
+            u => u.Id,
+            l => l.FileInfoId,
+            (u, l) => new FileModel
+            {
+                Id = u.Id,
+                Name = u.Name,
+                SizeInByte = u.SizeInByte,
+                FileType = u.FileType,
+                Link = l.Id.ToString("N")
+
+            }).ToListAsync();
     }
 }
