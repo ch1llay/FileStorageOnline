@@ -11,7 +11,6 @@ namespace FileService.Models
         public string? Name { get; set; }
         public long SizeInByte { get; set; }
         public string? FileType { get; set; }
-        public string? Link { get; set; }
         public byte[] Content { get; set; }
     }
 }

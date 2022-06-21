@@ -1,4 +1,5 @@
-﻿using Domain.Interfaces;
+﻿using DataAccess.Models;
+using Domain.Interfaces;
 using FileService.Models;
 
 namespace FileService
@@ -16,41 +17,46 @@ namespace FileService
             _fileDataRepository = fileDataRepository;
             _linkRepository = linkRepository;
         }
-        public async Task<List<FileFullModel>> GetAllFileInfo()
+        public async Task<List<FileModel>> GetAllFilesInfo()
         {
 
-            var files = await _fileInfoRepository.GetAll();
-            List<FileInfoModel> result = new List<FileInfoModel>();
-            foreach(var file in files)
+            return await _fileInfoRepository.GetFileModels();
+
+        }
+
+        public async Task<FileFullModel> GetFileFullModelByLink(string link)
+        {
+            Guid linkId;
+            if (!Guid.TryParse(link, out linkId))
             {
-                var link = await GetLinkForFile(file.Id);
-                result.Add(new FileInfoModel
-                {
-                    Name = file.Name,
-                    f
-                }
+                return null;
             }
+            var linkModel = await _linkRepository.Get(linkId);
+            if (linkModel == null)
+            {
+                return null;
+            }
+            var fileInfo = await _fileInfoRepository.Get(linkModel.FileInfoId);
+            if (fileInfo == null)
+            {
+                return null;
+            }
+            var fileData = await _fileDataRepository.Get(fileInfo.FileDataId);
+            if (fileData == null)
+            {
+                return null;
+            }
+            return new FileFullModel
+            {
+                Name = fileInfo.Name,
+                FileType = fileInfo.FileType,
+                SizeInByte = fileInfo.SizeInByte,
+                Content = fileData.Content
+            };
         }
         public async Task<string> GetLinkForFile(Guid fileId)
         {
             return (await _linkRepository.GetLinkIdByFileInfoId(fileId)).ToString("N");
-        }
-        public Task<FileFullModel> GetFileByLink(string link)
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public Task<FileInfoModel> GetFileInfoByLink(string link)
-        {
-            Guid guid;
-            if (!Guid.TryParse(link, out guid))
-            {
-                return null;
-            }
-
-            return null;
-            // var link = _linkRepository.Get();
         }
     }
 }
