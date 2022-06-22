@@ -24,6 +24,24 @@ namespace Service
             _fileDataRepository = fileDataRepository;
             _linkRepository = linkRepository;
         }
+
+        public async Task<FileInfoServiceModel> Get(Guid id)
+        {
+            var file = await _fileInfoRepository.Get(id);
+            if (file == null)
+            {
+                return null;
+            }
+
+            return new FileInfoServiceModel
+            {
+                Id = file.Id,
+                Name = file.Name,
+                SizeInByte = file.SizeInByte,
+                FileType = file.FileType,
+            };
+        }
+
         public async Task<List<FileInfoServiceModel>> GetAllFilesInfo()
         {
 
@@ -38,6 +56,10 @@ namespace Service
 
         }
 
+        public async Task<byte[]> GetFileDataBytes(Guid id)
+        {
+            
+        }
         public async Task<FileFullModel> GetFileFullModelByLink(string link)
         {
             Guid linkId;
@@ -59,6 +81,10 @@ namespace Service
             {
                 return null;
             }
+            if(fileInfo.FileSaveType == SaveType.Phisical)
+            {
+                
+            }
             var fileData = await _fileDataRepository.GetByFileInfoId(fileInfo.Id);
             if (fileData == null)
             {
@@ -77,7 +103,7 @@ namespace Service
         public async Task<List<FileInfoServiceModel>> GetFileInfoServicesInTimeLoading(List<FileInfoServiceModel> files)
         {
             var filesWithIds = new List<FileInfoServiceModel>();
-            foreach(var file in files)
+            foreach (var file in files)
             {
                 var fileId = await _fileInfoRepository.Create(new DbFileInfo
                 {
@@ -113,7 +139,7 @@ namespace Service
 
         public async Task<Guid> LoadFile(FileFullModel fileFullModel)
         {
-            
+
             var file = new DbFileInfo()
             {
                 Name = fileFullModel.Name,
@@ -121,14 +147,23 @@ namespace Service
                 FileType = fileFullModel.FileType,
             };
             var fileInfoId = await _fileInfoRepository.Create(file);
+            if(fileInfoId == Guid.Empty)
+            {
+                return Guid.Empty;
+            }
             var fileData = new DbFileData
             {
                 FileInfoId = fileInfoId,
                 Content = fileFullModel.Content
             };
-            await _fileDataRepository.Create(fileData);
+            var fileDataBd = await _fileDataRepository.Create(fileData);
 
-            
+            if (fileDataBd == Guid.Empty)
+            {
+                return Guid.Empty;
+            }
+
+
             return fileInfoId;
         }
     }

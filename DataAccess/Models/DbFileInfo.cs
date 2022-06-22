@@ -3,8 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Models
 {
+    public enum SaveType
+    {
+        Phisical,
+        DataBase
+    }
     public class DbFileInfo
     {
+
         [Key]
         public Guid Id { get; set; }
 
@@ -14,6 +20,8 @@ namespace DataAccess.Models
         public long SizeInByte { get; set; }
         [Required]
         public string? FileType { get; set; }
+        [Required]
+        public SaveType FileSaveType { get; set; }
 
     }
 }

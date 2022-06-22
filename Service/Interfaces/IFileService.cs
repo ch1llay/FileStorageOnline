@@ -15,5 +15,6 @@ namespace Service.Interfaces
         public Task<Guid> LoadFile(FileFullModel fileFullModel);
         public Task<string> GetUrlByFileId(Guid id);
         public Task<List<FileInfoServiceModel>> GetFileInfoServicesInTimeLoading(List<FileInfoServiceModel> files);
+        public Task<FileInfoServiceModel> Get(Guid id);
     }
 }
