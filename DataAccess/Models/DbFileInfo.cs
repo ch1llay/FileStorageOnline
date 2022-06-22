@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Models
 {
@@ -13,7 +14,6 @@ namespace DataAccess.Models
         public long SizeInByte { get; set; }
         [Required]
         public string? FileType { get; set; }
-        public int PercentLoad { get; set; }
 
     }
 }

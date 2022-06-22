@@ -13,5 +13,7 @@ namespace DataAccess.Models
         public Guid Id { get; set; }
         [Required]
         public Guid FileInfoId { get; set; }
+        [Required]
+        public DateTime UploadDate { get; set; }
     }
 }

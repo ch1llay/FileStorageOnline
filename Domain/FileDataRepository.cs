@@ -41,5 +41,10 @@ namespace Domain.Interfaces
 
             return obj;
         }
+
+        public Task<DbFileData> GetByFileInfoId(Guid id)
+        {
+            return _dataContext.DataFiles.FirstOrDefaultAsync(x=>x.FileInfoId == id);
+        }
     }
 }

@@ -1,4 +1,6 @@
-﻿using DataAccess.Models;
+﻿using System;
+using System.Threading.Tasks;
+using DataAccess.Models;
 
 namespace Domain.Interfaces
 {
@@ -6,5 +8,6 @@ namespace Domain.Interfaces
     {
         public Task<Guid> Create(DbFileData fileInfo);
         public Task<DbFileData?> Get(Guid id);
+        public Task<DbFileData?> GetByFileInfoId(Guid id);
     }
 }
