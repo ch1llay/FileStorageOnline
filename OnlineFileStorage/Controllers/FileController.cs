@@ -22,10 +22,13 @@ namespace OnlineFileStorage.Controllers
             _fileService = fileService;
         }
 
-        [HttpPost("/LoadMany")]
+        [HttpPost("/loadMany")]
         public async Task<IActionResult> LoadManyFiles(IFormFileCollection formFiles)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             var uploadedFiles = new List<FileInfoServiceModel>();
             foreach (var formFile in formFiles)
@@ -42,7 +45,10 @@ namespace OnlineFileStorage.Controllers
                 var id = await _fileService.LoadFile(file);
 
                 var loadingStatus = LoadingStatus.Success;
-                if (id == Guid.Empty) loadingStatus = LoadingStatus.Failed;
+                if (id == Guid.Empty)
+                {
+                    loadingStatus = LoadingStatus.Failed;
+                }
 
                 uploadedFiles.Add(new FileInfoServiceModel
                 {
@@ -57,10 +63,13 @@ namespace OnlineFileStorage.Controllers
             return Ok(uploadedFiles);
         }
 
-        [HttpPost("/LoadOne")]
+        [HttpPost("/loadOne")]
         public async Task<IActionResult> FileLoad(IFormFile formFile)
         {
-            if (!ModelState.IsValid) return BadRequest();
+            if (!ModelState.IsValid)
+            {
+                return BadRequest();
+            }
 
             using var memoryStream = new MemoryStream();
             await formFile.CopyToAsync(memoryStream);
@@ -73,13 +82,16 @@ namespace OnlineFileStorage.Controllers
             };
 
             var id = await _fileService.LoadFile(file);
-            if (id == Guid.Empty) return StatusCode(500);
+            if (id == Guid.Empty)
+            {
+                return StatusCode(500);
+            }
 
             return Ok(id);
         }
 
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("getAllFiles")]
+        public async Task<IActionResult> GetAllFiles()
         {
             return Ok(await _fileService.GetAllFilesInfo());
         }
@@ -87,10 +99,16 @@ namespace OnlineFileStorage.Controllers
         [HttpGet("/getUrl")]
         public async Task<IActionResult> GetUrlForFile([FromQuery] Guid fileId)
         {
-            if (fileId == Guid.Empty) return BadRequest();
+            if (fileId == Guid.Empty)
+            {
+                return BadRequest();
+            }
 
             var uri = await _fileService.GetUriByFileId(fileId);
-            if (uri == null) return StatusCode(500);
+            if (uri == null)
+            {
+                return StatusCode(500);
+            }
 
             return Ok($"https://{Request.Host.Value}/downloadFile/{uri}");
         }
@@ -98,10 +116,16 @@ namespace OnlineFileStorage.Controllers
         [HttpGet("/downloadFile/{uri}")]
         public async Task<IActionResult> Download(string uri)
         {
-            if (!Guid.TryParse(uri, out var _)) return BadRequest();
+            if (!Guid.TryParse(uri, out var _))
+            {
+                return BadRequest();
+            }
 
             var file = await _fileService.GetFileFullModelByLink(uri);
-            if (file == null) return NotFound("Ссылка не существует либо недействительна");
+            if (file == null)
+            {
+                return NotFound("Ссылка не существует либо недействительна");
+            }
 
             return File(file.Content, file.FileType, file.Name);
         }

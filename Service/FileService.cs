@@ -26,7 +26,10 @@ namespace Service
         public async Task<FileInfoServiceModel> Get(Guid id)
         {
             var file = await _fileInfoRepository.Get(id);
-            if (file == null) return null;
+            if (file == null)
+            {
+                return null;
+            }
 
             return new FileInfoServiceModel
             {
@@ -51,18 +54,33 @@ namespace Service
         public async Task<FileFullModel> GetFileFullModelByLink(string link)
         {
             Guid linkId;
-            if (!Guid.TryParse(link, out linkId)) return null;
+            if (!Guid.TryParse(link, out linkId))
+            {
+                return null;
+            }
 
             var linkModel = await _linkRepository.Get(linkId);
-            if (linkModel == null) return null;
+            if (linkModel == null)
+            {
+                return null;
+            }
 
-            if ((DateTime.Now - linkModel.UploadDate).TotalMinutes > 15) return null;
+            if ((DateTime.Now - linkModel.UploadDate).TotalMinutes > 15)
+            {
+                return null;
+            }
 
             var fileInfo = await _fileInfoRepository.Get(linkModel.FileInfoId);
-            if (fileInfo == null) return null;
+            if (fileInfo == null)
+            {
+                return null;
+            }
 
             var fileData = await _fileDataRepository.GetByFileInfoId(fileInfo.Id);
-            if (fileData == null) return null;
+            if (fileData == null)
+            {
+                return null;
+            }
 
             await _linkRepository.Delete(linkId);
             return new FileFullModel
@@ -85,7 +103,10 @@ namespace Service
                     FileType = file.FileType,
                     SizeInByte = file.SizeInByte
                 });
-                if (fileId == null) file.Id = Guid.Empty;
+                if (fileId == null)
+                {
+                    file.Id = Guid.Empty;
+                }
 
                 file.Id = fileId;
                 filesWithIds.Add(file);
@@ -102,7 +123,10 @@ namespace Service
                     UploadDate = DateTime.Now,
                     FileInfoId = id
                 });
-            if (link == Guid.Empty) return null;
+            if (link == Guid.Empty)
+            {
+                return null;
+            }
 
             return link.ToString("N");
         }
@@ -116,7 +140,10 @@ namespace Service
                 FileType = fileFullModel.FileType
             };
             var fileInfoId = await _fileInfoRepository.Create(file);
-            if (fileInfoId == Guid.Empty) return Guid.Empty;
+            if (fileInfoId == Guid.Empty)
+            {
+                return Guid.Empty;
+            }
 
             var fileData = new DbFileData
             {
@@ -125,7 +152,10 @@ namespace Service
             };
             var fileDataBd = await _fileDataRepository.Create(fileData);
 
-            if (fileDataBd == Guid.Empty) return Guid.Empty;
+            if (fileDataBd == Guid.Empty)
+            {
+                return Guid.Empty;
+            }
 
 
             return fileInfoId;

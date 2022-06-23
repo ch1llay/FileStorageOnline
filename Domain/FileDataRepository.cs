@@ -19,7 +19,10 @@ namespace Domain
         public async Task<Guid> Create(DbFileData entity)
         {
             var obj = (await _dataContext.DataFiles.AddAsync(entity)).Entity;
-            if (obj == null) return Guid.Empty;
+            if (obj == null)
+            {
+                return Guid.Empty;
+            }
 
             await _dataContext.SaveChangesAsync();
 
@@ -29,7 +32,10 @@ namespace Domain
         public async Task<DbFileData> Get(Guid id)
         {
             var obj = await _dataContext.DataFiles.FirstOrDefaultAsync(x => x.Id == id);
-            if (obj == null) return null;
+            if (obj == null)
+            {
+                return null;
+            }
 
             return obj;
         }
