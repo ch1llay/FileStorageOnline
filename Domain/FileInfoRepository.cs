@@ -8,7 +8,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Domain
 {
-
     public class FileInfoRepository : IFileInfoRepository
     {
         private readonly DataContext _dataContext;
@@ -21,29 +20,11 @@ namespace Domain
         public async Task<Guid> Create(DbFileInfo entity)
         {
             var obj = (await _dataContext.InfoFiles.AddAsync(entity)).Entity;
-            if (obj == null)
-            {
-                return Guid.Empty;
-            }
+            if (obj == null) return Guid.Empty;
 
             await _dataContext.SaveChangesAsync();
 
             return obj.Id;
-        }
-
-        public async Task<bool> Delete(Guid id)
-        {
-            var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == id);
-
-            if (obj == null)
-            {
-                return false;
-            }
-
-            _dataContext.InfoFiles.Remove(obj);
-            var changes = await _dataContext.SaveChangesAsync();
-
-            return changes != 0;
         }
 
         public async Task<DbFileInfo> Get(Guid id)
@@ -57,5 +38,16 @@ namespace Domain
             return await _dataContext.InfoFiles.ToListAsync();
         }
 
+        public async Task<bool> Delete(Guid id)
+        {
+            var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == id);
+
+            if (obj == null) return false;
+
+            _dataContext.InfoFiles.Remove(obj);
+            var changes = await _dataContext.SaveChangesAsync();
+
+            return changes != 0;
+        }
     }
 }

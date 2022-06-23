@@ -32,9 +32,10 @@ namespace OnlineFileStorage
 
         private Task HandleExceptionAsync(HttpContext context, Exception e, ILogger<GlobalExceptionHandler> logger)
         {
+            logger.Log(LogLevel.Error, $"Error: {JsonConvert.SerializeObject(e)}");
             var code = HttpStatusCode.InternalServerError;
             var result = JsonConvert.SerializeObject(new
-            { error = "We're already working on it. Please try again later" });
+                { error = "We're already working on it. Please try again later" });
             context.Response.ContentType = "application/json";
             context.Response.StatusCode = (int)code;
             return context.Response.WriteAsync(result);
