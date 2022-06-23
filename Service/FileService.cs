@@ -15,9 +15,6 @@ namespace Service
         private readonly IFileDataRepository _fileDataRepository;
         private readonly ILinkRepository _linkRepository;
 
-
-
-
         public FileService(IFileInfoRepository fileInfoRepository, IFileDataRepository fileDataRepository, ILinkRepository linkRepository)
         {
             _fileInfoRepository = fileInfoRepository;
@@ -55,11 +52,6 @@ namespace Service
             }).ToList();
 
         }
-
-        public async Task<byte[]> GetFileDataBytes(Guid id)
-        {
-            
-        }
         public async Task<FileFullModel> GetFileFullModelByLink(string link)
         {
             Guid linkId;
@@ -80,10 +72,6 @@ namespace Service
             if (fileInfo == null)
             {
                 return null;
-            }
-            if(fileInfo.FileSaveType == SaveType.Phisical)
-            {
-                
             }
             var fileData = await _fileDataRepository.GetByFileInfoId(fileInfo.Id);
             if (fileData == null)
@@ -121,7 +109,7 @@ namespace Service
             return filesWithIds;
         }
 
-        public async Task<string> GetUrlByFileId(Guid id)
+        public async Task<string> GetUriByFileId(Guid id)
         {
             var link = await _linkRepository.Create(
                 new DbLink
@@ -147,7 +135,7 @@ namespace Service
                 FileType = fileFullModel.FileType,
             };
             var fileInfoId = await _fileInfoRepository.Create(file);
-            if(fileInfoId == Guid.Empty)
+            if (fileInfoId == Guid.Empty)
             {
                 return Guid.Empty;
             }

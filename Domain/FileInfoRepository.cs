@@ -46,7 +46,7 @@ namespace Domain
             return changes != 0;
         }
 
-        public async Task<DbFileInfo?> Get(Guid id)
+        public async Task<DbFileInfo> Get(Guid id)
         {
             var obj = await _dataContext.InfoFiles.FirstOrDefaultAsync(x => x.Id == id);
             return obj;

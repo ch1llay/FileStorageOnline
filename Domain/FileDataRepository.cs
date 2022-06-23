@@ -31,7 +31,7 @@ namespace Domain.Interfaces
 
             return obj.Id;
         }
-        public async Task<DbFileData?> Get(Guid id)
+        public async Task<DbFileData> Get(Guid id)
         {
             var obj = await _dataContext.DataFiles.FirstOrDefaultAsync(x => x.Id == id);
             if (obj == null)

@@ -47,13 +47,13 @@ namespace Domain
             return changes != 0;
         }
 
-        public async Task<DbLink?> Get(Guid id)
+        public async Task<DbLink> Get(Guid id)
         {
             var obj = await _dataContext.Links.FirstOrDefaultAsync(x => x.Id == id);
             return obj;
         }
 
-        public Task<DbLink?> GetByFileId(Guid fileId)
+        public Task<DbLink> GetByFileId(Guid fileId)
         {
             return _dataContext.Links.FirstOrDefaultAsync(x => x.FileInfoId == fileId);
         }

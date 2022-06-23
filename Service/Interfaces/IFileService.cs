@@ -13,7 +13,7 @@ namespace Service.Interfaces
         public Task<List<FileInfoServiceModel>> GetAllFilesInfo();
         public Task<FileFullModel> GetFileFullModelByLink(string link);
         public Task<Guid> LoadFile(FileFullModel fileFullModel);
-        public Task<string> GetUrlByFileId(Guid id);
+        public Task<string> GetUriByFileId(Guid id);
         public Task<List<FileInfoServiceModel>> GetFileInfoServicesInTimeLoading(List<FileInfoServiceModel> files);
         public Task<FileInfoServiceModel> Get(Guid id);
     }

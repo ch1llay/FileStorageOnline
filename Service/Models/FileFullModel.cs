@@ -13,6 +13,5 @@ namespace Service.Models
         public long SizeInByte { get; set; }
         public string? FileType { get; set; }
         public byte[] Content { get; set; }
-        public SaveType FileSaveType { get; set; }
     }
 }
