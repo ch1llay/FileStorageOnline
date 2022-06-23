@@ -47,7 +47,10 @@ namespace Service
                 Id = x.Id,
                 Name = x.Name,
                 FileType = x.FileType,
-                SizeInByte = x.SizeInByte
+                SizeInByte = x.SizeInByte,
+                Status = x.Id == Guid.Empty
+                ? "failed"
+                : "success"
             }).ToList();
         }
 
