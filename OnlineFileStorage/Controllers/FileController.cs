@@ -44,11 +44,9 @@ namespace OnlineFileStorage.Controllers
                 };
                 var id = await _fileService.LoadFile(file);
 
-                var loadingStatus = LoadingStatus.Success;
-                if (id == Guid.Empty)
-                {
-                    loadingStatus = LoadingStatus.Failed;
-                }
+                var loadingStatus = id == Guid.Empty
+                    ? "failed"
+                    : "success";
 
                 uploadedFiles.Add(new FileInfoServiceModel
                 {

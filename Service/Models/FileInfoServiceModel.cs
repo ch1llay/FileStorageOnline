@@ -15,6 +15,6 @@ namespace Service.Models
         public string Name { get; set; }
         public long SizeInByte { get; set; }
         public string FileType { get; set; }
-        public LoadingStatus Status { get; set; }
+        public string Status { get; set; }
     }
 }
