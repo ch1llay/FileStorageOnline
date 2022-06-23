@@ -101,7 +101,7 @@ namespace OnlineFileStorage.Controllers
             if (!Guid.TryParse(uri, out var _)) return BadRequest();
 
             var file = await _fileService.GetFileFullModelByLink(uri);
-            if (file == null) return NotFound("Ссылка не существует либо не действительна");
+            if (file == null) return NotFound("Ссылка не существует либо недействительна");
 
             return File(file.Content, file.FileType, file.Name);
         }
